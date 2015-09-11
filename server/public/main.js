@@ -19,7 +19,7 @@ function pushDoc(document) {
 }
  
 App.onLaunch = function(options) {
-  var templateURL = 'http://localhost:3000/test.tvml';
+  var templateURL = "http://localhost:3000/";
   getDocument(templateURL);
 }
  

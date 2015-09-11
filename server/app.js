@@ -10,6 +10,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var jade = require("jade");
+var routes = require("./routes");
 
 // ---- [ setup ] --------------------------------------------------------------
 
@@ -25,7 +26,7 @@ app.use(bodyParser());
 
 // ---- [ routing ] ------------------------------------------------------------
 
-
+app.get("/", routes.home);
 
 // ---- [ run server ] --------------------------------------------------------
 
