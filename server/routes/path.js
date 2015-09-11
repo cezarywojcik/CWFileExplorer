@@ -5,19 +5,38 @@
  * Auth: Cezary Wojcik
  */
 
+var fs = require("fs");
+
 exports.path = function(req, res) {
-  res.render("folder", {
-    title: "Sample Folder Title",
-    items: [
-      {
-        title: "Item 1",
-        content: "Content 1"
-      },
-      {
-        title: "Item 2",
-        content: "Content 2"
-      }
-    ]
+  var path = "/" + req.params.path;
+  fs.readdir(path, function(err, files) {
+    var items = [];
+
+    // add parent directory
+    items.push({
+      title: "..",
+      type: "Directory",
+      image: ""
+    });
+
+    // list items in folder
+    for (var i in files) {
+      var item = {};
+      item.title = files[i];
+      var fullPath = path + files[i]
+      var stats = fs.statSync(fullPath);
+      // show file type
+      item.type= stats.isFile() ? "File" :
+        stats.isDirectory() ? "Directory" :
+        stats.isBlockDevice() ? "Block Device" :
+        "Other";
+      item.image = "file://" + fullPath;
+      items.push(item);
+    }
+    res.render("folder", {
+      title: path,
+      items: items 
+    });
   });
-};
+ };
 

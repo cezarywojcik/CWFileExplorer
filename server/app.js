@@ -27,7 +27,7 @@ app.use(bodyParser());
 // ---- [ routing ] ------------------------------------------------------------
 
 app.get("/", routes.home);
-app.get("/ui/path/*", routes.path);
+app.get("/ui/path/:path(*)", routes.path);
 
 // ---- [ run server ] --------------------------------------------------------
 
