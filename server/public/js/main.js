@@ -37,11 +37,8 @@ function loadDocument(url, completion) {
 }
  
 App.onLaunch = function(options) {
-  var templateURL = "http://localhost:3000/";
+  var templateURL = "http://localhost:3000/ui/path/yolo";
   loadDocument(templateURL, function() {
-    alert("Document List", navigationDocument.documents, function() {
-      navigationDocument.dismissModal();
-    });
     var temp = navigationDocument.documents[0].getElementById("button1");
     temp.addEventListener("select", function() {
       alert("Huzzah!", "Success.", function() {

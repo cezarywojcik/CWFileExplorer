@@ -1,0 +1,16 @@
+document
+  listTemplate
+    banner 
+      title CWFileExplorer
+    list
+      header 
+        text #{ title }
+      section
+        each item in items
+          listItemLockup
+            title #{ item.title }
+            relatedContent
+              lockup
+                title #{ item.title }
+                description #{ item.content }
+
