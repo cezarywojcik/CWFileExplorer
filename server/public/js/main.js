@@ -5,9 +5,16 @@
  * Auth: Cezary Wojcik
  */
 
-var defaultPath = "/";
+var settings = {
+  defaultPath: "/",
+  serverUrl: "http://localhost",
+  port: 3000
+};
 
-function alert(title, description, doneCallback) {
+
+// ---- [ helper functions ] ---------------------------------------------------
+
+function alert(title, description) {
   var alertXMLString = `<?xml version="1.0" encoding="UTF-8" ?>
   <document>
     <alertTemplate>
@@ -20,7 +27,9 @@ function alert(title, description, doneCallback) {
   </document>`
   var parser = new DOMParser();
   var alertDOMElement = parser.parseFromString(alertXMLString, "application/xml");
-  alertDOMElement.addEventListener("select", doneCallback, false);
+  alertDOMElement.addEventListener("select", function() {
+    navigationDocument.dismissModal();
+  }, false);
   navigationDocument.presentModal(alertDOMElement);
 }
 
@@ -35,17 +44,24 @@ function loadDocument(url, completion) {
   templateXHR.send();
   return templateXHR;
 }
- 
+
+function loadUIForPath(path, completion) {
+  var url = settings.serverUrl + ":" + settings.port + "/ui/path" + path;
+  loadDocument(url, function() {
+    navigationDocument.documents[0].addEventListener("select", 
+      listItemSelected, false);
+  });
+}
+
+function listItemSelected(event) {
+  var el = event.target;
+  alert("Huzzah!", el.getAttribute("type"));
+}
+
+// ---- [ App functions ] ------------------------------------------------------
+
 App.onLaunch = function(options) {
-  var templateURL = "http://localhost:3000/ui/path/";
-  loadDocument(templateURL, function() {
-    var temp = navigationDocument.documents[0].getElementById("button1");
-    temp.addEventListener("select", function() {
-      alert("Huzzah!", "Success.", function() {
-        navigationDocument.dismissModal();
-      });
-    }, false);
-  }); 
+  loadUIForPath(settings.defaultPath);
 }
  
 App.onExit = function() {

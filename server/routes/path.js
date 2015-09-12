@@ -13,11 +13,13 @@ exports.path = function(req, res) {
     var items = [];
 
     // add parent directory
-    items.push({
-      title: "..",
-      type: "Directory",
-      image: ""
-    });
+    if (path != "/") {
+      items.push({
+        title: "..",
+        type: "Directory",
+        image: ""
+      });
+    }
 
     // list items in folder
     for (var i in files) {

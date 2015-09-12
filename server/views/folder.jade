@@ -7,11 +7,11 @@ document
         text #{ title }
       section
         each item in items
-          listItemLockup(type=item.type)
+          listItemLockup(type=item.type, class="item")
             title #{ item.title }
             relatedContent
               lockup
                 title #{ item.title }
-                img(src=item.image)
+                // img(src=item.image)
                 description #{ item.type }
 
