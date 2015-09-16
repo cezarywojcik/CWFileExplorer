@@ -7,7 +7,7 @@ document
         text #{ title }
       section
         each item in items
-          listItemLockup(type=item.type, class="item")
+          listItemLockup(type=item.type, path=item.path)
             title #{ item.title }
             relatedContent
               lockup

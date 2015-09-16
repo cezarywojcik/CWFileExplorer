@@ -37,7 +37,12 @@ function loadDocument(url, completion) {
   var templateXHR = new XMLHttpRequest();
   templateXHR.responseType = "document";
   templateXHR.addEventListener("load", function() {
-    navigationDocument.pushDocument(templateXHR.responseXML);
+    if (navigationDocument.documents.length === 0) {
+      navigationDocument.pushDocument(templateXHR.responseXML);
+    } else {
+      navigationDocument.replaceDocument(templateXHR.responseXML,
+        navigationDocument.documents[0]);
+    }
     completion();
   }, false);
   templateXHR.open("GET", url, true);
@@ -46,7 +51,8 @@ function loadDocument(url, completion) {
 }
 
 function loadUIForPath(path, completion) {
-  var url = settings.serverUrl + ":" + settings.port + "/ui/path" + path;
+  var url = settings.serverUrl + ":" + settings.port + "/ui/path" 
+    + encodeURI(path);
   loadDocument(url, function() {
     navigationDocument.documents[0].addEventListener("select", 
       listItemSelected, false);
@@ -55,7 +61,15 @@ function loadUIForPath(path, completion) {
 
 function listItemSelected(event) {
   var el = event.target;
-  alert("Huzzah!", el.getAttribute("type"));
+  var type = el.getAttribute("type");
+  switch (type) {
+    case "Directory":
+      var path = el.getAttribute("path");
+      loadUIForPath(path);
+      break;
+    default:
+      alert("Huzzah!", type);
+  }
 }
 
 // ---- [ App functions ] ------------------------------------------------------

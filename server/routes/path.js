@@ -13,12 +13,21 @@ exports.path = function(req, res) {
     var items = [];
 
     // add parent directory
+    var parentPath = path.split("/");
+    parentPath.pop();
+    parentPath = parentPath.length === 1 ? "/" : parentPath.join("/");
     if (path != "/") {
       items.push({
         title: "..",
         type: "Directory",
-        image: ""
+        image: "",
+        path: parentPath 
       });
+    }
+
+    // make sure path ends in slash
+    if (path.slice(-1) !== "/") {
+      path += "/";
     }
 
     // list items in folder
@@ -26,13 +35,14 @@ exports.path = function(req, res) {
       var item = {};
       item.title = files[i];
       var fullPath = path + files[i]
-      var stats = fs.statSync(fullPath);
+      var stats = fs.lstatSync(fullPath);
       // show file type
       item.type= stats.isFile() ? "File" :
         stats.isDirectory() ? "Directory" :
         stats.isBlockDevice() ? "Block Device" :
         "Other";
       item.image = "file://" + fullPath;
+      item.path = fullPath;
       items.push(item);
     }
     res.render("folder", {
