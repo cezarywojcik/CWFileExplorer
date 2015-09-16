@@ -6,6 +6,8 @@
  */
 
 var fs = require("fs");
+var readChunk = require("read-chunk");
+var fileType = require("file-type");
 
 exports.path = function(req, res) {
   var path = "/" + req.params.path;
@@ -41,6 +43,15 @@ exports.path = function(req, res) {
         stats.isDirectory() ? "Directory" :
         stats.isBlockDevice() ? "Block Device" :
         "Other";
+      // TODO: check if have permission before doing this
+      // TODO: find better way to check file type
+      if (item.type === "File") {
+        var buf = readChunk.sync(fullPath, 0, 5);
+        var ft = fileType(buf);
+        if (ft !== null) {
+          item.type = ft.mime;
+        }
+      }
       item.image = "file://" + fullPath;
       item.path = fullPath;
       items.push(item);
