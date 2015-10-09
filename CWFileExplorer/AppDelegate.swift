@@ -13,27 +13,30 @@ import TVMLKit
 class AppDelegate: UIResponder, UIApplicationDelegate, TVApplicationControllerDelegate {
 
     var window : UIWindow?
-    var appController : TVApplicationController?
-
+    var appController: TVApplicationController?
+    
+    static let TVBaseURL = "http://localhost:3000/"
+    
+    static let TVBootURL = "\(AppDelegate.TVBaseURL)js/main.js"
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        self.window = UIWindow(frame:UIScreen.mainScreen().bounds)
-        
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+
         let appControllerContext = TVApplicationControllerContext()
+
+        if let javaScriptURL = NSURL(string: AppDelegate.TVBootURL) {
+            appControllerContext.javaScriptApplicationURL = javaScriptURL
+        }
+
+        appControllerContext.launchOptions["BASEURL"] = AppDelegate.TVBaseURL
         
-        let jsFilePath = NSURL(string: "http://localhost:3000/js/main.js")
-        let javascriptURL = jsFilePath!
-        
-        appControllerContext.javaScriptApplicationURL = javascriptURL
-        
-        if let options = launchOptions {
-            for (kind, value) in options {
-                if let kindStr = kind as? String {
-                    appControllerContext.launchOptions[kindStr] = value
-                }
+        if let launchOptions = launchOptions as? [String: AnyObject] {
+            for (kind, value) in launchOptions {
+                appControllerContext.launchOptions[kind] = value
             }
         }
         
-        self.appController = TVApplicationController(context: appControllerContext, window: self.window, delegate: self)
+        appController = TVApplicationController(context: appControllerContext, window: window, delegate: self)
         
         return true
     }
@@ -60,6 +63,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate, TVApplicationControllerDe
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
 }
-
